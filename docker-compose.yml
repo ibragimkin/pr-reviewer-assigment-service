@@ -4,7 +4,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: gotodo
+      POSTGRES_DB: service
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -12,7 +12,7 @@ services:
     networks:
       - app-network
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres -d gotodo" ]
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d service" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -24,7 +24,7 @@ services:
         condition: service_healthy
     command: [
       "-path", "./migrations/",
-      "-database", "postgres://postgres:password@db:5432/gotodo?sslmode=disable",
+      "-database", "postgres://postgres:password@db:5432/service?sslmode=disable",
       "up"
     ]
     volumes:
@@ -40,10 +40,10 @@ services:
       - db
       - migrate
     ports:
-      - "8089:8089"
+      - "8080:8080"
     environment:
-      DATABASE_URL: postgres://postgres:password@db:5432/gotodo
-      HTTP_PORT: 8089
+      DATABASE_URL: postgres://postgres:password@db:5432/service
+      HTTP_PORT: 8080
     networks:
       - app-network
 volumes:
