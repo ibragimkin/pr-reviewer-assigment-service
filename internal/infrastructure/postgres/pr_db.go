@@ -24,7 +24,7 @@ func NewPullRequestDb(pool *pgxpool.Pool) *PullRequestDb {
 }
 
 // Create создаёт новый PR.
-// Если PR с таким ID уже существует — возвращает repository.ErrAlreadyExists.
+// Если PR с таким ID уже существует - возвращает repository.ErrAlreadyExists.
 func (r *PullRequestDb) Create(ctx context.Context, pr *domain.PullRequest) error {
 	const query = `
 		INSERT INTO pull_requests (
@@ -72,7 +72,7 @@ func (r *PullRequestDb) Create(ctx context.Context, pr *domain.PullRequest) erro
 }
 
 // GetByID возвращает PR по ID.
-// Если не найден — возвращает repository.ErrNotFound.
+// Если не найден - возвращает repository.ErrNotFound.
 func (r *PullRequestDb) GetByID(ctx context.Context, id string) (*domain.PullRequest, error) {
 	const query = `
 		SELECT
@@ -206,4 +206,20 @@ func (r *PullRequestDb) ListByReviewer(ctx context.Context, reviewerID string) (
 	}
 
 	return result, nil
+}
+
+// GetReviewerStats получает статистику назначений по ревьюверам.
+func (r *PullRequestDb) GetReviewerStats(ctx context.Context) ([]domain.ReviewerStat, error) {
+	const query = `
+        SELECT reviewer_id, COUNT(*) AS review_count
+        FROM (
+            SELECT unnest(assigned_reviewers) AS reviewer_id
+            FROM pull_requests
+        ) AS t
+        GROUP BY reviewer_id
+        ORDER BY reviewer_id
+    `
+
+	rows, err := r.pool.Query(ctx, query)
+	// собрать []repository.ReviewerStat и вернуть
 }

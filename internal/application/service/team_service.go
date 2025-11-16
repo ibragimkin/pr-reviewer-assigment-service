@@ -64,3 +64,22 @@ func (t *TeamService) Get(ctx context.Context, teamName string) (*domain.Team, e
 
 	return team, nil
 }
+
+func (t *TeamService) DeactivateMembers(ctx context.Context, teamName string) error {
+	team, err := t.teamRepo.GetByName(ctx, teamName)
+	if err != nil {
+		if errors.Is(err, repository.ErrNotFound) {
+			return domain.NewError(domain.ErrorNotFound, "team not found: "+teamName)
+		}
+	}
+	for _, member := range team.Members {
+		_, err := t.userRepo.SetActive(ctx, member.UserID, false)
+		if err != nil {
+			if errors.Is(err, repository.ErrNotFound) {
+				continue
+			}
+			return fmt.Errorf("userRepo.SetActive: %w", err)
+		}
+	}
+	return nil
+}

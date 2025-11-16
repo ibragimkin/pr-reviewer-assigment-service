@@ -101,3 +101,23 @@ func (h *TeamHandlers) Get(w http.ResponseWriter, r *http.Request) {
 
 	writeJSON(w, http.StatusOK, resp)
 }
+
+func (h *TeamHandlers) DeactivateMembers(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPatch {
+		writeMethodNotAllowed(w)
+		return
+	}
+
+	teamName := r.URL.Query().Get("team_name")
+	if teamName == "" {
+		writeBadRequest(w, "team_name is required")
+		return
+	}
+	err := h.teamService.DeactivateMembers(r.Context(), teamName)
+	if err != nil {
+		writeDomainError(w, err)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	return
+}

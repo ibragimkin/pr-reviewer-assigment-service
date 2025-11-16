@@ -32,7 +32,6 @@ func (s *UserService) SetIsActive(ctx context.Context, userID string, isActive b
 		}
 		return nil, fmt.Errorf("userRepo.SetActive: %w", err)
 	}
-
 	return user, nil
 }
 

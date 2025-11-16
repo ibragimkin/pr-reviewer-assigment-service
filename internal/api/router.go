@@ -16,6 +16,7 @@ func NewRouter(
 	teamHandlers *httphandlers.TeamHandlers,
 	userHandlers *httphandlers.UserHandlers,
 	prHandlers *httphandlers.PullRequestHandlers,
+	statsHandlers *httphandlers.StatsHandlers,
 ) http.Handler {
 	r := chi.NewRouter()
 	r.Get("/swagger/openapi.yml", func(w http.ResponseWriter, r *http.Request) {
@@ -35,6 +36,7 @@ func NewRouter(
 
 	r.Post("/team/add", teamHandlers.Add)
 	r.Get("/team/get", teamHandlers.Get)
+	r.Patch("/team/deactivate", teamHandlers.DeactivateMembers)
 
 	r.Post("/users/setIsActive", userHandlers.SetIsActive)
 	r.Get("/users/getReview", userHandlers.GetReview)
@@ -42,6 +44,8 @@ func NewRouter(
 	r.Post("/pullRequest/create", prHandlers.Create)
 	r.Post("/pullRequest/merge", prHandlers.Merge)
 	r.Post("/pullRequest/reassign", prHandlers.Reassign)
+
+	r.Get("/stats/reviewers", statsHandlers.GetReviewerStats)
 
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)

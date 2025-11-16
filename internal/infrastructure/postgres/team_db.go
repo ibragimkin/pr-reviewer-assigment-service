@@ -22,7 +22,7 @@ func NewTeamDb(pool *pgxpool.Pool) *TeamDb {
 }
 
 // Create создаёт новую команду.
-// Если команда с таким именем уже существует — возвращает repository.ErrAlreadyExists.
+// Если команда с таким именем уже существует - возвращает repository.ErrAlreadyExists.
 func (r *TeamDb) Create(ctx context.Context, team *domain.Team) error {
 	const query = `
 		INSERT INTO teams (team_name)
@@ -42,7 +42,7 @@ func (r *TeamDb) Create(ctx context.Context, team *domain.Team) error {
 }
 
 // GetByName возвращает команду вместе с участниками.
-// Если команда не найдена — возвращает repository.ErrNotFound.
+// Если команда не найдена - возвращает repository.ErrNotFound.
 func (r *TeamDb) GetByName(ctx context.Context, teamName string) (*domain.Team, error) {
 	const queryTeam = `
 		SELECT team_name

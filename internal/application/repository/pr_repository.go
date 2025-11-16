@@ -18,4 +18,7 @@ type PullRequestRepository interface {
 
 	// ListByReviewer возвращает список PR'ов, где пользователь назначен ревьювером.
 	ListByReviewer(ctx context.Context, reviewerID string) ([]domain.PullRequestShort, error)
+
+	// GetReviewerStats получает статистику назначений по ревьюверам.
+	GetReviewerStats(ctx context.Context) ([]domain.ReviewerStat, error)
 }

@@ -8,6 +8,7 @@ tags:
   - name: Users
   - name: PullRequests
   - name: Health
+  - name: Stats
 
 components:
   parameters:
@@ -26,6 +27,14 @@ components:
         type: string
       description: Идентификатор пользователя
   schemas:
+    ReviewerStat:
+      type: object
+      required: [ user_id, review_count ]
+      properties:
+        user_id:
+          type: string
+        review_count:
+          type: integer
     ErrorResponse:
       type: object
       required: [error]
@@ -193,6 +202,21 @@ paths:
                   - user_id: u2
                     username: Bob
                     is_active: true
+        '404':
+          description: Команда не найдена
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+  /team/deactivate:
+    patch:
+      tags: [ Teams ]
+      summary: Деактивировать всех участников команды
+      parameters:
+        - $ref: '#/components/parameters/TeamNameQuery'
+      responses:
+        '200':
+          description: Успешная деактивация. Тело ответа отсутствует.
+          content: { }
         '404':
           description: Команда не найдена
           content:

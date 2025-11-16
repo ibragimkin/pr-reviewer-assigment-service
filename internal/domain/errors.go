@@ -1,6 +1,6 @@
 package domain
 
-// ErrorCode —  код ошибки.
+// ErrorCode -  код ошибки.
 type ErrorCode string
 
 const (
