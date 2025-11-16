@@ -221,5 +221,24 @@ func (r *PullRequestDb) GetReviewerStats(ctx context.Context) ([]domain.Reviewer
     `
 
 	rows, err := r.pool.Query(ctx, query)
-	// собрать []repository.ReviewerStat и вернуть
+	if err != nil {
+		return nil, fmt.Errorf("query reviewer stats: %w", err)
+	}
+	defer rows.Close()
+
+	stats := make([]domain.ReviewerStat, 0)
+
+	for rows.Next() {
+		var stat domain.ReviewerStat
+		if err := rows.Scan(&stat.UserID, &stat.ReviewCount); err != nil {
+			return nil, fmt.Errorf("scan reviewer stat: %w", err)
+		}
+		stats = append(stats, stat)
+	}
+
+	if rows.Err() != nil {
+		return nil, fmt.Errorf("rows error: %w", rows.Err())
+	}
+
+	return stats, nil
 }

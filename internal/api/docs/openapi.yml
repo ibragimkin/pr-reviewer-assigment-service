@@ -443,3 +443,27 @@ paths:
                     pull_request_name: Add search
                     author_id: u1
                     status: OPEN
+  /stats/reviewers:
+    get:
+      tags: [ Stats ]
+      summary: Статистика назначений по ревьюверам
+      responses:
+        '200':
+          description: Количество назначений по пользователям
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ items ]
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ReviewerStat'
+  /health:
+    get:
+      tags: [ Health ]
+      summary: health check
+      responses:
+        '200':
+          description: OK

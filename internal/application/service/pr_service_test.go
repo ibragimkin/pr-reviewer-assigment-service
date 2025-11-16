@@ -15,6 +15,10 @@ type mockPRRepo struct {
 	data map[string]domain.PullRequest
 }
 
+func (m *mockPRRepo) GetReviewerStats(ctx context.Context) ([]domain.ReviewerStat, error) {
+	return []domain.ReviewerStat{}, nil
+}
+
 func newMockPRRepo() *mockPRRepo {
 	return &mockPRRepo{
 		data: make(map[string]domain.PullRequest),
