@@ -1,0 +1,53 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: gotodo
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d gotodo" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+  migrate:
+    image: migrate/migrate:v4.15.1
+    depends_on:
+      db:
+        condition: service_healthy
+    command: [
+      "-path", "./migrations/",
+      "-database", "postgres://postgres:password@db:5432/gotodo?sslmode=disable",
+      "up"
+    ]
+    volumes:
+      - ./migrations:/migrations
+    networks:
+      - app-network
+
+  payment-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+      - migrate
+    ports:
+      - "8089:8089"
+    environment:
+      DATABASE_URL: postgres://postgres:password@db:5432/gotodo
+      HTTP_PORT: 8089
+    networks:
+      - app-network
+volumes:
+  postgres_data:
+networks:
+  app-network:
+    driver: bridge
