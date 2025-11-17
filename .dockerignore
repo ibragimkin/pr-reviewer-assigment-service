@@ -1,5 +1,5 @@
-*_test.go
-.git/
+**/*_test.go
+**/*.js
+test
+.git
 .gitignore
-*.js
-test/k6/

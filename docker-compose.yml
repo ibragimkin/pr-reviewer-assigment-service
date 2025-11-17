@@ -32,7 +32,7 @@ services:
     networks:
       - app-network
 
-  payment-service:
+  pr-reviewer-assignment-service:
     build:
       context: .
       dockerfile: Dockerfile

@@ -3,6 +3,7 @@ package httphandlers
 import (
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 	"pr-reviewer-assigment-service/internal/domain"
 )
@@ -44,6 +45,7 @@ func writeMethodNotAllowed(w http.ResponseWriter) {
 func writeDomainError(w http.ResponseWriter, err error) {
 	var dErr *domain.Error
 	if errors.As(err, &dErr) {
+		log.Printf("%v: %v", dErr.Code, dErr.Message)
 		switch dErr.Code {
 		case domain.ErrorNotFound:
 			writeJSON(w, http.StatusNotFound, errorResponse{
