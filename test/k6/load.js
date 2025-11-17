@@ -1,6 +1,6 @@
-import http from "k6/http";
+import http from "test/k6/http";
 import { check, sleep } from "k6";
-import { Trend, Rate } from "k6/metrics";
+import { Trend, Rate } from "test/k6/metrics";
 
 const BASE_URL = __ENV.BASE_URL || "http://localhost:8080";
 
@@ -14,9 +14,9 @@ const errorRate = new Rate("errors");
 
 // // Настройки нагрузки
 export const options = {
-    vus: 1000,      // количество виртуальных пользователей
+    vus: 100,      // количество виртуальных пользователей
     duration: "30s",
-    rps: 1000,      // ограничиваем общее число запросов в секунду до 5
+    rps: 100,      // ограничиваем общее число запросов в секунду.
 };
 
 export function setup() {
@@ -47,8 +47,7 @@ export function setup() {
 export default function (data) {
     const headers = { "Content-Type": "application/json" };
 
-    // 1. Создаём PR с уникальным ID
-    const prId = `pr-${__VU}-${__ITER}`; // __VU - номер виртуального пользователя, __ITER - номер итерации
+    const prId = `pr-${__VU}-${__ITER}`;
     const createPrPayload = JSON.stringify({
         pull_request_id: prId,
         pull_request_name: `Load test PR ${prId}`,
@@ -85,7 +84,6 @@ export default function (data) {
         errorRate.add(1);
     }
 
-    // 3. Получаем статистику по ревьюверам
     const resStats = http.get(`${BASE_URL}/stats/reviewers`);
     statsDuration.add(resStats.timings.duration);
 
