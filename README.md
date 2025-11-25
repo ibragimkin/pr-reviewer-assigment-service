@@ -4,6 +4,7 @@
 kindarov04@gmail.com
 tg: @ibrakadabrs
 ```
+UPD 25.11: Убрал `.env` из gitignore и залил сюда, чтобы было удобнее тестировать. (до этого было в `.env.example`)
 
 Сервис автоматического назначения ревьюверов на Pull Request’ы.
 Реализован на Go в соответствии с OpenAPI-спецификацией (`internal/api/docs/openapi.yml`).
